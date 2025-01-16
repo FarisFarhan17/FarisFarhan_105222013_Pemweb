@@ -13,7 +13,8 @@ class Event extends Model{
     protected $fillable = [
         'event', 
         'start', 
-        'end'
+        'end',
+        'user_id'
     ];
 
     public function user () {

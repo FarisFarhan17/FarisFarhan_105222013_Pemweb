@@ -20,7 +20,7 @@
         		</button>
       		</div>
 	      	<div class="modal-body">
-				@csrf <!-- Token CSRF untuk keamanan -->
+				@csrf 
 				<div class="form-group">
 					<label for="email">Email/Username</label>
 					<input type="text" name="email" id="email" class="form-control" placeholder="Masukkan email atau username" required>

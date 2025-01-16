@@ -4,11 +4,12 @@ namespace App\Jawaban;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use Illuminate\Support\Facades\Auth;
 
 class NomorTiga {
 
     public function getData() {
-        $events = Event::all();
+        $events = Event::where('user_id', Auth::id())->get(); 
         $data = [];
         foreach ($events as $event) {
             $data[] = [
@@ -22,7 +23,9 @@ class NomorTiga {
     }
 
     public function getSelectedData(Request $request) {
-        $event = Event::find($request->id); // Mengambil data berdasarkan ID saja
+        $event = Event::where('id', $request->id)
+                      ->where('user_id', Auth::id())
+                      ->first();
         if ($event) {
             $data = [
                 'id' => $event->id,
@@ -37,20 +40,23 @@ class NomorTiga {
     }
 
     public function update(Request $request) {
-        $event = Event::find($request->id); 
+        $event = Event::where('id', $request->id)
+                      ->where('user_id', Auth::id())
+                      ->first(); 
         if ($event) {
             $event->event = $request->event;
             $event->start = $request->start;
             $event->end = $request->end;
             $event->save();
         }
-        return redirect()->route('event.home')->with('success', 'Jadwal berhasil diupdate.');
+        return redirect()->route('event.home');
     }
 
     public function delete(Request $request) {
-        Event::where('id', $request->id)->delete(); 
-        return redirect()->route('event.home')->with('success', 'Jadwal berhasil dihapus.');
+        Event::where('id', $request->id)
+             ->where('user_id', Auth::id())
+             ->delete(); 
+        return redirect()->route('event.home');
     }
 }
-
 ?>

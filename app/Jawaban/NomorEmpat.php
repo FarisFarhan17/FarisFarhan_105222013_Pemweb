@@ -3,18 +3,24 @@
 namespace App\Jawaban;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use App\Models\Event;
 
 class NomorEmpat {
 
-	public function getJson () {
+    public function getJson() {
+        $events = Event::with('user')->get();
 
-		// Tuliskan code untuk mengambil semua jadwal, simpan di variabel $data
-		$data = [];
+        $data = $events->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'title' => $event->event . ' - ' . $event->user->name,
+                'start' => $event->start,
+                'end' => $event->end,
+                'color' => $event->user_id == Auth::id() ? '#007bff' : '#6c757d', 
+            ];
+        });
 
-		return response()->json($data);
-	}
+        return response()->json($data);
+    }
 }
-
 ?>

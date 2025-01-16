@@ -1,22 +1,28 @@
 <script type="text/javascript">
-    $(document).ready(function() {
-        $.ajax({
-            url: '{{ route("event.get-json") }}', // Use Blade syntax to output the route URL
-            type: 'GET',
-            success: function(data) {
-                $('#calendar').fullCalendar({
-                    events: data,
-                    eventRender: function(event, element) {
-                        element.attr('title', 'User ID: ' + event.user);
-                        element.css('background-color', event.color);
-                    },
-                    editable: true,
-                    droppable: true,
-                });
+    $(document).ready(function(){
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                right   : 'prev,next',
+                center  : 'title', 
+                left    : null,
             },
-            error: function(xhr, status, error) {
-                console.log("Error loading events:", error);
+            locale: 'id',
+            initialView: 'dayGridMonth',
+            events: function(fetchInfo, successCallback, failureCallback) {
+                $.ajax({
+                    url: '{{ route("event.get-json") }}', 
+                    type: 'GET',
+                    success: function(data) {
+                        successCallback(data); 
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error loading events:", error);
+                        failureCallback(error);
+                    }
+                });
             }
         });
+        calendar.render();
     });
 </script>
